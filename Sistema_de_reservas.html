@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas - Restaurante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: hwb(0 20% 80%);
+            color: hsl(0, 0%, 100%);
+        }
+        .contenedor-principal {
+            display: flex;
+            max-width: auto;
+            margin: 0 auto;
+            gap: 40px;
+        }
+        .seccion-izquierda {
+            flex: 7;
+        }
+        .seccion-derecha {
+            flex: 4;
+        }
+        .imagen-restaurante {
+            width: 100%;
+            height: 270px;
+            text-align: center; 
+            border-radius: 0px;
+            margin-bottom: 0px;
+        }
+        .descripcion {
+            line-height: 1.5;
+            text-align: justify;
+        }
+        .formulario-reserva {
+            background-color: #000000cc;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid hsl(0, 0%, 100%);
+        }
+        .form-grupo {
+            margin-bottom: 15px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        .modal-contenido {
+            background-color: #000000cc;
+            border: 1px solid hsl(0, 0%, 100%);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            color: white;
+        }
+        .datos-reserva {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #000000;
+            background-color: hsl(0, 0%, 100%);
+            color: #000000;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: hsl(0, 0%, 100%);
+            color: hsl(0, 0%, 0%);
+            border: 2px solid hsl(0, 0%, 100%);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #FFD700;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor-principal">
+        <div class="seccion-izquierda">
+            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0" alt="Plato gourmet" class="imagen-restaurante">
+            <div class="descripcion">
+                <h2>Bienvenido a La Dolce Vita</h2>
+                <p>En La Dolce Vita, te invitamos a disfrutar de los placeres de la auténtica cocina italiana en un ambiente que evoca el encanto y la elegancia de Italia. Nuestro menú, cuidadosamente diseñado, ofrece una selección de pastas frescas, pizzas al horno de leña, y platos tradicionales que celebran los sabores y la pasión de la cocina italiana. Desde un clásico risotto hasta un delicado tiramisú, cada platillo es una muestra del verdadero "sabor italiano".</p>
+                <p>Ubicado en un espacio acogedor y sofisticado, La Dolce Vita es el lugar perfecto para una cena romántica, una celebración especial o una comida en familia. Nuestro equipo está dedicado a brindarte un servicio cálido y atento, asegurándose de que tu visita sea una experiencia inolvidable. Ven a disfrutar con nosotros de la buena comida, buen vino y el arte de "la dolce vita".</p>
+                <p>¡Te esperamos!</p>
+            </div>
+        </div>
+        <div class="seccion-derecha">
+            <div class="formulario-reserva">
+                <h2>Realiza una reserva</h2>
+                <form id="formularioReserva">
+                    <div class="form-grupo">
+                        <label for="nombre">Nombre completo:</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="email">Correo electrónico(Opcional):</label>
+                        <input type="email" id="email">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="tel" id="telefono" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hora">Hora (13:00 - 23:00):</label>
+                        <input type="time" id="hora" required 
+                            min="13:00" max="23:00" 
+                            step="1800"
+                            oninvalid="this.setCustomValidity('Por favor seleccione una hora entre las 13:00 y 23:00')"
+                           oninput="this.setCustomValidity('')">
+                        <small style="color: #FFD700; display: block; margin-top: 5px;">Horario de reservas: 1:00 PM a 11:00 PM</small>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="personas">Número de personas:</label>
+                        <select id="personas" required>
+                            <option value="">Seleccione</option>
+                            <option value="1">1 persona</option>
+                            <option value="2">2 personas</option>
+                            <option value="3">3 personas</option>
+                            <option value="4">4 personas</option>
+                            <option value="5">5 personas</option>
+                            <option value="6">6 personas</option>
+                            <option value="7+">7 o más personas</option>
+                        </select>
+                    </div>
+                    <script>
+                        document.getElementById('formularioReserva').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            
+                            // Obtener los valores del formulario
+                            const nombre = document.getElementById('nombre').value;
+                            const email = document.getElementById('email').value;
+                            const telefono = document.getElementById('telefono').value;
+                            const fecha = document.getElementById('fecha').value;
+                            const hora = document.getElementById('hora').value;
+                            const personas = document.getElementById('personas').value;
+                    
+                            // Formatear la fecha
+                            const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES');
+                    
+                            // Crear el contenido de la confirmación
+                            const datosHTML = `
+                                <p><strong>Nombre:</strong> ${nombre}</p>
+                                <p><strong>Email:</strong> ${email || 'No proporcionado'}</p>
+                                <p><strong>Teléfono:</strong> ${telefono}</p>
+                                <p><strong>Fecha:</strong> ${fechaFormateada}</p>
+                                <p><strong>Hora:</strong> ${hora}</p>
+                                <p><strong>Número de personas:</strong> ${personas}</p>
+                            `;
+                    
+                            // Mostrar los datos en el modal
+                            document.getElementById('datosReserva').innerHTML = datosHTML;
+                            document.getElementById('modalConfirmacion').style.display = 'block';
+                        });
+                    
+                        function confirmarReserva() {
+                            alert('¡Reserva confirmada! Gracias por elegir La Dolce Vita.');
+                            document.getElementById('modalConfirmacion').style.display = 'none';
+                            document.getElementById('formularioReserva').reset();
+                        }
+                    
+                        // Cerrar el modal si se hace clic fuera de él
+                        window.onclick = function(event) {
+                            const modal = document.getElementById('modalConfirmacion');
+                            if (event.target == modal) {
+                                modal.style.display = 'none';
+                            }
+                        }
+                    </script>
+                    <div id="modalConfirmacion" class="modal">
+                        <div class="modal-contenido">
+                            <h2>Confirmar Reserva</h2>
+                            <div id="datosReserva" class="datos-reserva"></div>
+                            <button onclick="confirmarReserva()">Confirmar Reserva</button>
+                        </div>
+                    </div>
+                    <button type="submit">Realizar Reserva</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
